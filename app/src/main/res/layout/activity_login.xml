@@ -22,7 +22,7 @@
         android:layout_centerHorizontal="true"/>
 
     <EditText
-        android:id="@+id/usernameField"
+        android:id="@+id/userField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/passField"
@@ -37,8 +37,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/loginButton"
-        android:layout_alignLeft="@+id/usernameField"
-        android:layout_alignStart="@+id/usernameField"
+        android:layout_alignLeft="@+id/userField"
+        android:layout_alignStart="@+id/userField"
         android:layout_marginBottom="50dp"
         android:ems="10"
         android:hint="@string/pass_field"

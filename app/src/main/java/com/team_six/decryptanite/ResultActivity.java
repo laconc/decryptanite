@@ -11,11 +11,13 @@ import com.team_six.decryptanite.models.GoogleTranslate;
 import com.team_six.decryptanite.models.UpdateCallback;
 
 public class ResultActivity extends AppCompatActivity implements UpdateCallback {
+    private static final String TAG = ResultActivity.class.getSimpleName();
+
+    private DbHelper db = new DbHelper(this);
+    private String user;
+
     TextView originalTextView;
     TextView translatedTextView;
-    private String user;
-    private String TAG = ResultActivity.class.getSimpleName();
-    private DbHelper db = new DbHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +28,12 @@ public class ResultActivity extends AppCompatActivity implements UpdateCallback 
         Intent intent = getIntent();
         user = intent.getStringExtra("user");
 
-        String result = intent.getStringExtra("result");
-        originalTextView.setText(result);
+        String ocrResult = intent.getStringExtra("ocrResult");
+        originalTextView.setText(ocrResult);
 
         try {
-            translate(result);
-            db.storeTranslation(user, result, translatedTextView.getText().toString());
+            translate(ocrResult);
+            db.storeTranslation(user, ocrResult, translatedTextView.getText().toString());
         } catch (Exception e) {
             Log.e(TAG, "ERROR: Couldn't translate the text.");
         }
@@ -40,6 +42,7 @@ public class ResultActivity extends AppCompatActivity implements UpdateCallback 
     public void translate(String original) throws Exception {
         translatedTextView = (TextView) findViewById(R.id.translatedTextView);
         translatedTextView.setText("Translating...");
+
         new GoogleTranslate(this, user).getTranslation(original);
     }
 

@@ -2,8 +2,8 @@ package com.team_six.decryptanite.models;
 
 import android.provider.BaseColumns;
 
-public final class DBContract {
-    private DBContract() {}
+public final class DbContract {
+    private DbContract() {}
 
     public static class Users implements BaseColumns {
         public static final String TABLE_NAME = "Users";

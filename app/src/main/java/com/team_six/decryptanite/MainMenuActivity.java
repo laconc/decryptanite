@@ -2,7 +2,6 @@ package com.team_six.decryptanite;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,14 +17,16 @@ import java.io.File;
 import java.sql.Timestamp;
 
 public class MainMenuActivity extends AppCompatActivity {
-    private Tesseract tesseract;
-    private int SELECT_PICTURE = 100;
-    private String TAG = MainMenuActivity.class.getSimpleName();
-    private int REQUEST_IMAGE_CAPTURE = 1;
-    private String user;
-    private Uri outputFileUri;
-    private boolean isPic;
+    private static final String TAG = MainMenuActivity.class.getSimpleName();
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int SELECT_PICTURE = 100;
+
     private DbHelper db = new DbHelper(this);
+    private Tesseract tesseract;
+    private Uri outputFileUri;
+
+    private boolean isNewPic;
+    private String user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +39,7 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
     public void explore(View view) throws Exception {
-        isPic = false;
+        isNewPic = false;
         try {
             Intent intent = new Intent();
             intent.setType("image/*");
@@ -50,7 +51,7 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
     public void snapPic(View view) throws Exception {
-        isPic = true;
+        isNewPic = true;
         try {
             String IMAGES_PATH = tesseract.getDataPath() + "images";
             tesseract.prepareDirectory(IMAGES_PATH);
@@ -71,17 +72,18 @@ public class MainMenuActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (isPic) {
+        if (isNewPic) {
             if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-                db.logSnapPicEvent(user, Status.SUCCESS);
+                db.logNewPicEvent(user, Status.SUCCESS);
                 tesseract.startOcr(outputFileUri);
             } else {
                 Log.e(TAG, "ERROR: Image was not obtained.");
-                db.logSnapPicEvent(user, Status.FAILURE);
+                db.logNewPicEvent(user, Status.FAILURE);
             }
         } else {
             if (resultCode == RESULT_OK && requestCode == SELECT_PICTURE) {
                 db.logLoadPicEvent(user, Status.SUCCESS);
+
                 Uri selectedImageUri = data.getData();
                 if (selectedImageUri != null) {
                     tesseract.startOcr(selectedImageUri);

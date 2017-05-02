@@ -18,18 +18,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class Tesseract  extends ContextWrapper {
-    private String TAG = Tesseract.class.getSimpleName();
+public class Tesseract extends ContextWrapper {
+    private static final String TAG = Tesseract.class.getSimpleName();
+    private static final String TESSDATA = "tessdata";
+    private final String DATA_PATH;
+
     private DbHelper db = new DbHelper(this);
-    private String DATA_PATH;
     private TessBaseAPI tessBaseApi;
+
     private String user;
 
     public Tesseract(Context context, String user) {
         super(context);
         this.user = user;
         DATA_PATH = Environment.getExternalStorageDirectory().toString() + "/Decryptanite/";
-        String TESSDATA = "tessdata";
 
         try {
             prepareDirectory(DATA_PATH + TESSDATA);
@@ -44,9 +46,9 @@ public class Tesseract  extends ContextWrapper {
         try {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
 
-            String result = extractText(bitmap);
+            String ocrResult = extractText(bitmap);
             db.logOcrEvent(user, Status.SUCCESS);
-            showResult(result);
+            showResult(ocrResult);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
             db.logOcrEvent(user, Status.FAILURE);
@@ -77,10 +79,10 @@ public class Tesseract  extends ContextWrapper {
         return extractedText;
     }
 
-    private void showResult(String result) {
+    private void showResult(String ocrResult) {
         Intent intent = new Intent(this, ResultActivity.class);
         intent.putExtra("user", user);
-        intent.putExtra("result", result);
+        intent.putExtra("ocrResult", ocrResult);
         startActivity(intent);
     }
 

@@ -21,16 +21,18 @@ import java.util.Map;
 
 
 public class GoogleTranslate extends ContextWrapper {
+    private static final String TAG = GoogleTranslate.class.getSimpleName();
+
     private DbHelper db = new DbHelper(this);
     private RequestQueue queue = Volley.newRequestQueue(this);
-    private String TAG = GoogleTranslate.class.getSimpleName();
-    private String translatedMessage = "";
     private UpdateCallback updateCallback;
+
+    private String translatedMessage = "";
     private String user;
 
-    public GoogleTranslate(Context base, String user) {
-        super(base);
-        this.updateCallback = (UpdateCallback) base;
+    public GoogleTranslate(Context context, String user) {
+        super(context);
+        this.updateCallback = (UpdateCallback) context;
         this.user = user;
     }
 
